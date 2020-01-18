@@ -1,11 +1,14 @@
 package com.civiledcode.Snorkle;
 
 import java.io.File;
+import java.util.concurrent.BlockingQueue;
 
 public class SnorkleInstance {
+    //TODO: Add proxies
     String instanceTitle;
     boolean useProxies = false;
     boolean useCaptcha = false;
+    boolean shouldStart = false;
 
     int botCount = 0;
 
@@ -37,14 +40,6 @@ public class SnorkleInstance {
         return this.useCaptcha = bool;
     }
 
-    public void setBotCount(int amount) {
-        this.botCount = amount;
-    }
-
-    public int getBotCount() {
-        return botCount;
-    }
-
     public void setWordlist(File file) {
         this.wordlist = file;
     }
@@ -55,5 +50,26 @@ public class SnorkleInstance {
 
     public AuthHandler getHandler() {
         return handler;
+    }
+
+    public void start(SnorkleInstance instance) {
+        instance.shouldStart = true;
+        Runnable target;
+        Thread startChecker = new Thread(new Runnable() {
+            @Override
+            public void run(){
+                Snorkle.runInstance(instance, getBotAmount());
+            }
+        }, instanceTitle + "Checker");
+
+        startChecker.start();
+    }
+
+    public void stop() {
+        shouldStart = false;
+    }
+
+    public int getBotAmount() {
+        return 100;
     }
 }

@@ -4,29 +4,44 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 public class Snorkle {
-    public static boolean runInstances = false;
     public static void runInstance(SnorkleInstance instance, int botcount) {
-        while(runInstances) {
-            if(instance.getBotCount() == botcount) {
-                continue;
-            } else {
+        String[] words = null;
+        try {
+            words = parseList(instance.wordlist);
+        } catch(Exception e) {
+            System.out.println(ConsoleColor.RED + "ERROR: An unexpected error occurred whilst loading the word list!");
+            System.exit(0);
+            return;
+        }
+        int index = 0;
+
+        try {
+            //Create a blocking queue to send to the newClient method
+            //We use this to pass information to the responseParsing thread
+            BlockingQueue<String> queue = new ArrayBlockingQueue<String>(words.length);
+            while (instance.shouldStart) {
+                if (botcount > instance.botCount) {
+                    //It's okay to run :)
+                    String[] user = words[index].split(":");
+
+                    //Push the response to the responseHandler where we can depict what to do
+                    queue.put(instance.newClient(user[0], user[1]));
+
+                    //Increase the index and bot count for the instance
+                    index++;
+                }
             }
+        } catch(Exception e) {
+            e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
 
-    }
-
-    public static void stopInstances() {
-        runInstances = false;
-    }
-
-    public static void startInstances() {
-        runInstances = true;
     }
 
     public static String[] parseList(File file) throws IOException {
