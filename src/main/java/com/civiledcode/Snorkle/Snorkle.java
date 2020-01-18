@@ -8,7 +8,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class Snorkle {
-    public static void runInstance(SnorkleInstance instance, int botcount) {
+    public static void runInstance(SnorkleInstance instance, int botnumber) {
         String[] words = null;
         try {
             words = parseList(instance.wordlist);
@@ -24,16 +24,14 @@ public class Snorkle {
             //We use this to pass information to the responseParsing thread
             BlockingQueue<String> queue = new ArrayBlockingQueue<String>(words.length);
             while (instance.shouldStart) {
-                if (botcount > instance.botCount) {
                     //It's okay to run :)
-                    String[] user = words[index].split(":");
+                    String[] user = words[botnumber + (index * instance.getBotAmount())].split(":");
 
                     //Push the response to the responseHandler where we can depict what to do
                     queue.put(instance.newClient(user[0], user[1]));
 
                     //Increase the index and bot count for the instance
-                    index++;
-                }
+                index++;
             }
         } catch(Exception e) {
             e.printStackTrace();

@@ -54,15 +54,14 @@ public class SnorkleInstance {
 
     public void start(SnorkleInstance instance) {
         instance.shouldStart = true;
-        Runnable target;
-        Thread startChecker = new Thread(new Runnable() {
-            @Override
-            public void run(){
-                Snorkle.runInstance(instance, getBotAmount());
-            }
-        }, instanceTitle + "Checker");
-
-        startChecker.start();
+        for(int i = 0; i < botCount; i++) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Snorkle.runInstance(instance, getBotAmount());
+                }
+            }, instanceTitle + "CheckerBot" + i).start();
+        }
     }
 
     public void stop() {
