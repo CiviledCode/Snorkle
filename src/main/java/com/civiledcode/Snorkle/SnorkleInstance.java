@@ -5,13 +5,20 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class SnorkleInstance {
-    //TODO: Add proxies
+
+    //TODO: Add proxy support
+
     String instanceTitle;
+
     boolean useProxies = false;
+
     boolean useCaptcha = false;
+
     boolean shouldStart = false;
 
-    File wordlist;
+    int getMaximumBots = 100;
+
+    File wordList;
 
     AuthHandler handler;
 
@@ -20,18 +27,13 @@ public class SnorkleInstance {
     public SnorkleInstance(String title) {
         this.instanceTitle = title;
         try {
-            queue = new ArrayBlockingQueue<String>(Snorkle.parseList(wordlist).length);
+            queue = new ArrayBlockingQueue<>(Snorkle.parseList(wordList).length);
         } catch(Exception e) {
             System.out.println(ConsoleColor.RED + "ERROR: An unexpected error occurred whilst loading the word list!");
             System.exit(0);
         }
         SnorkleInstance instance = this;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                instance.getHandler().run(queue, instance);
-            }
-        }, instanceTitle + "AuthHandler").start();
+        new Thread(() -> instance.getHandler().run(queue, instance), instanceTitle + "AuthHandler").start();
     }
 
     public boolean useProxies(boolean bool) {
@@ -54,8 +56,8 @@ public class SnorkleInstance {
         return this.useCaptcha = bool;
     }
 
-    public void setWordlist(File file) {
-        this.wordlist = file;
+    public void setWordList(File file) {
+        this.wordList = file;
     }
 
     public void setAuthHandler(AuthHandler handler) {
@@ -68,14 +70,9 @@ public class SnorkleInstance {
 
     public void start(SnorkleInstance instance, BlockingQueue<String> queue) {
         instance.shouldStart = true;
-        for(int i = 0; i < getBotAmount(); i++) {
-            final int forThisCrap = i;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Snorkle.runInstance(instance, forThisCrap, queue);
-                }
-            }, instanceTitle + "CheckerBot" + i).start();
+        for (int i = 0; i < getMaxBotAmount(); i++) {
+            final int finalIndex = i;
+            new Thread(() -> Snorkle.runInstance(instance, finalIndex, queue), instanceTitle + "CheckerBot" + i).start();
         }
     }
 
@@ -83,7 +80,8 @@ public class SnorkleInstance {
         shouldStart = false;
     }
 
-    public int getBotAmount() {
-        return 100;
+    public int getMaxBotAmount() {
+        return getMaximumBots;
     }
+
 }

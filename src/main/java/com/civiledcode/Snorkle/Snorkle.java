@@ -6,6 +6,7 @@ import java.util.concurrent.BlockingQueue;
 public class Snorkle {
 
     //TODO: Work on retrying if auth failed due to banned IP or bad request
+
     public static void runInstance(SnorkleInstance instance, int botNumber, BlockingQueue<String> queue) {
         String[] words;
         try {
