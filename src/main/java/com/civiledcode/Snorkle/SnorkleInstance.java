@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class SnorkleInstance {
+public abstract class SnorkleInstance {
 
     //TODO: Add proxy support
 
@@ -46,11 +46,7 @@ public class SnorkleInstance {
      * @param pass Password of account
      * @return String used for response parsing in the PARSE thread
      */
-    public String newClient(String user, String pass) {
-        System.out.println(ConsoleColor.RED + "ERROR: The 'newClient' method must be overwritten to continue!");
-        System.exit(0);
-        return "ERROR";
-    }
+    public abstract String newClient(String user, String pass);
 
     public boolean usesCaptcha(boolean bool) {
         return this.useCaptcha = bool;
