@@ -11,8 +11,6 @@ public class SnorkleInstance {
     boolean useCaptcha = false;
     boolean shouldStart = false;
 
-    int botCount = 0;
-
     File wordlist;
 
     AuthHandler handler;
@@ -70,11 +68,12 @@ public class SnorkleInstance {
 
     public void start(SnorkleInstance instance, BlockingQueue<String> queue) {
         instance.shouldStart = true;
-        for(int i = 0; i < botCount; i++) {
+        for(int i = 0; i < getBotAmount(); i++) {
+            final int forThisCrap = i;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Snorkle.runInstance(instance, getBotAmount(), queue);
+                    Snorkle.runInstance(instance, forThisCrap, queue);
                 }
             }, instanceTitle + "CheckerBot" + i).start();
         }
