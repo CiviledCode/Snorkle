@@ -24,8 +24,9 @@ public abstract class SnorkleInstance {
 
     ArrayBlockingQueue<String> queue;
 
-    public SnorkleInstance(String title) {
+    public SnorkleInstance(String title, File wordList) {
         this.instanceTitle = title;
+        this.wordList = wordList;
         try {
             queue = new ArrayBlockingQueue<>(Snorkle.parseList(wordList).length);
         } catch(Exception e) {
