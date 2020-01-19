@@ -1,6 +1,7 @@
 package com.civiledcode.Snorkle;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -24,9 +25,12 @@ public abstract class SnorkleInstance {
 
     ArrayBlockingQueue<String> queue;
 
-    public SnorkleInstance(String title, File wordList) {
+    public SnorkleInstance(String title, File wordList) throws IOException {
         this.instanceTitle = title;
         this.wordList = wordList;
+        if (!wordList.exists()) {
+            wordList.createNewFile();
+        }
         try {
             queue = new ArrayBlockingQueue<>(Snorkle.parseList(wordList).length);
         } catch(Exception e) {
