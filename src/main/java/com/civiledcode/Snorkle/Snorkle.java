@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class Snorkle {
+    //TODO: Work on retrying if auth failed due to banned IP or bad request
     public static void runInstance(SnorkleInstance instance, int botnumber, BlockingQueue<String> queue) {
         String[] words = null;
         try {
