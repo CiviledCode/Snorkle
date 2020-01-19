@@ -22,6 +22,7 @@ public class Snorkle {
             // Create a blocking queue to send to the newClient method
             // We use this to pass information to the responseParsing thread
             while (instance.shouldStart) {
+
                     int ind = index * instance.getMaxBotAmount() + botNumber;
 
                     // If we have hit the end of the road
@@ -34,7 +35,8 @@ public class Snorkle {
                     queue.put(instance.newClient(user[0], user[1]));
 
                     // Increase the index and bot count for the instance
-                index++;
+                    index++;
+
             }
         } catch (Exception e) {
             e.printStackTrace();

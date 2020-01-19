@@ -21,7 +21,7 @@ public abstract class SnorkleInstance {
 
     File wordList;
 
-    AuthHandler handler;
+    AuthHandler handler = new AuthHandler();
 
     ArrayBlockingQueue<String> queue;
 
@@ -39,6 +39,7 @@ public abstract class SnorkleInstance {
         }
         SnorkleInstance instance = this;
         new Thread(() -> instance.getHandler().run(queue, instance), instanceTitle + "AuthHandler").start();
+        shouldStart = true;
     }
 
     public boolean useProxies(boolean bool) {
