@@ -1,6 +1,7 @@
 package com.civiledcode.Snorkle;
 
 import java.io.File;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class SnorkleInstance {
@@ -16,8 +17,23 @@ public class SnorkleInstance {
 
     AuthHandler handler;
 
+    ArrayBlockingQueue<String> queue;
+
     public SnorkleInstance(String title) {
         this.instanceTitle = title;
+        try {
+            queue = new ArrayBlockingQueue<String>(Snorkle.parseList(wordlist).length);
+        } catch(Exception e) {
+            System.out.println(ConsoleColor.RED + "ERROR: An unexpected error occurred whilst loading the word list!");
+            System.exit(0);
+        }
+        SnorkleInstance instance = this;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                instance.getHandler().run(queue, instance);
+            }
+        }, instanceTitle + "AuthHandler").start();
     }
 
     public boolean useProxies(boolean bool) {
@@ -52,13 +68,13 @@ public class SnorkleInstance {
         return handler;
     }
 
-    public void start(SnorkleInstance instance) {
+    public void start(SnorkleInstance instance, BlockingQueue<String> queue) {
         instance.shouldStart = true;
         for(int i = 0; i < botCount; i++) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    Snorkle.runInstance(instance, getBotAmount());
+                    Snorkle.runInstance(instance, getBotAmount(), queue);
                 }
             }, instanceTitle + "CheckerBot" + i).start();
         }

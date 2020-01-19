@@ -8,7 +8,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 public class Snorkle {
-    public static void runInstance(SnorkleInstance instance, int botnumber) {
+    public static void runInstance(SnorkleInstance instance, int botnumber, BlockingQueue<String> queue) {
         String[] words = null;
         try {
             words = parseList(instance.wordlist);
@@ -22,10 +22,15 @@ public class Snorkle {
         try {
             //Create a blocking queue to send to the newClient method
             //We use this to pass information to the responseParsing thread
-            BlockingQueue<String> queue = new ArrayBlockingQueue<String>(words.length);
             while (instance.shouldStart) {
+                    int ind = index * instance.getBotAmount() + botnumber;
+
+                    //If we have hit the end of the road
+                    if(ind >= words.length)
+                        break;
+
                     //It's okay to run :)
-                    String[] user = words[botnumber + (index * instance.getBotAmount())].split(":");
+                    String[] user = words[ind].split(":");
 
                     //Push the response to the responseHandler where we can depict what to do
                     queue.put(instance.newClient(user[0], user[1]));
@@ -36,10 +41,6 @@ public class Snorkle {
         } catch(Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-
     }
 
     public static String[] parseList(File file) throws IOException {
