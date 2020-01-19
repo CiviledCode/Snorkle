@@ -1,6 +1,9 @@
 package com.civiledcode.Snorkle;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.concurrent.BlockingQueue;
 
 public class Snorkle {
@@ -45,10 +48,13 @@ public class Snorkle {
 
     public static String[] parseList(File file) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(file));
-        String[] list = new String[br.lines().toArray().length];
+        Path path = Paths.get(file.getPath());
+        int lineCount = (int) Files.lines(path).count();
+        String[] list = new String[lineCount];
         try {
             for (int index = 0; index < list.length; index++) {
-                list[index] = br.readLine();
+                String line = br.readLine();
+                list[index] = line;
             }
         } finally {
             br.close();
