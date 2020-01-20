@@ -71,10 +71,18 @@ public abstract class SnorkleInstance {
     }
 
     public void start(SnorkleInstance instance, BlockingQueue<String> queue) {
+        String[] words;
+        try {
+            words = Snorkle.parseList(instance.wordList);
+        } catch (Exception e) {
+            System.out.println(ConsoleColor.RED + "ERROR: An unexpected error occurred whilst loading the word list!");
+            System.exit(0);
+            return;
+        }
         instance.shouldStart = true;
         for (int i = 0; i < getMaxBotAmount(); i++) {
             final int finalIndex = i;
-            new Thread(() -> Snorkle.runInstance(instance, finalIndex, queue), instanceTitle + "CheckerBot" + i).start();
+            new Thread(() -> Snorkle.runInstance(instance, finalIndex, queue, words), instanceTitle + "CheckerBot" + i).start();
         }
     }
 

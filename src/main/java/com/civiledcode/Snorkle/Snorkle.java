@@ -10,15 +10,7 @@ public class Snorkle {
 
     //TODO: Work on retrying if auth failed due to banned IP or bad request
 
-    public static void runInstance(SnorkleInstance instance, int botNumber, BlockingQueue<String> queue) {
-        String[] words;
-        try {
-            words = parseList(instance.wordList);
-        } catch (Exception e) {
-            System.out.println(ConsoleColor.RED + "ERROR: An unexpected error occurred whilst loading the word list!");
-            System.exit(0);
-            return;
-        }
+    public static void runInstance(SnorkleInstance instance, int botNumber, BlockingQueue<String> queue, String[] words) {
         int index = 0;
 
         try {
