@@ -2,6 +2,8 @@ package com.civiledcode.Snorkle;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -21,16 +23,28 @@ public abstract class SnorkleInstance {
 
     File wordList;
 
+    String[] words;
+
+    String[] proxies;
+
     AuthHandler handler = new AuthHandler();
+
+    ArrayList<String> retries = new ArrayList<>();
+
+    HashSet<String> proxiesUsed = new HashSet<>();
 
     ArrayBlockingQueue<String> queue;
 
-    public SnorkleInstance(String title, File wordList) throws IOException {
+    public SnorkleInstance(String title, File wordList, File proxyFile) throws IOException {
         this.instanceTitle = title;
         this.wordList = wordList;
         if (!wordList.exists()) {
             wordList.createNewFile();
         }
+        if (!proxyFile.exists()) {
+            proxyFile.createNewFile();
+        }
+        words = Snorkle.parseList(wordList);
         try {
             queue = new ArrayBlockingQueue<>(Snorkle.parseList(wordList).length);
         } catch(Exception e) {
@@ -42,10 +56,6 @@ public abstract class SnorkleInstance {
         shouldStart = true;
     }
 
-    public boolean useProxies(boolean bool) {
-       return this.useProxies = bool;
-    }
-
     /**
      * Try a new client. This method should be overwritten
      * @param user Username of account
@@ -53,6 +63,10 @@ public abstract class SnorkleInstance {
      * @return String used for response parsing in the PARSE thread
      */
     public abstract String newClient(String user, String pass);
+
+    public String getProxy() {
+        return "";
+    }
 
     public boolean usesCaptcha(boolean bool) {
         return this.useCaptcha = bool;
@@ -74,7 +88,24 @@ public abstract class SnorkleInstance {
         instance.shouldStart = true;
         for (int i = 0; i < getMaxBotAmount(); i++) {
             final int finalIndex = i;
-            new Thread(() -> Snorkle.runInstance(instance, finalIndex, queue), instanceTitle + "CheckerBot" + i).start();
+            new Thread(() -> {
+                Snorkle.runInstance(instance, finalIndex, queue);
+            }, instanceTitle + "CheckerBot" + i).start();
+        }
+    }
+
+    public boolean sendToAuth(String response, String user) {
+        try {
+            if (response.contains("400")) {
+                retries.add(user);
+                return true;
+            } else {
+                queue.put(response);
+                return false;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return true;
         }
     }
 

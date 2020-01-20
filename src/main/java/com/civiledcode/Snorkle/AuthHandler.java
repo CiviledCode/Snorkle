@@ -25,9 +25,7 @@ public class AuthHandler {
             while (!(message = queue.take()).equalsIgnoreCase("EXIT")) {
                 handleResponse(message);
             }
-        } catch (Exception e) {
-
-        }
+        } catch (Exception ignored) { }
     }
 
 }
