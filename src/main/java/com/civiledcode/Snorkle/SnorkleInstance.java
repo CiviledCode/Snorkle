@@ -89,7 +89,7 @@ public abstract class SnorkleInstance {
         for (int i = 0; i < getMaxBotAmount(); i++) {
             final int finalIndex = i;
             new Thread(() -> {
-                Snorkle.runInstance(instance, finalIndex, queue);
+                Snorkle.runInstance(instance, finalIndex, queue, words);
             }, instanceTitle + "CheckerBot" + i).start();
         }
     }
