@@ -117,4 +117,8 @@ public abstract class SnorkleInstance {
         return getMaximumBots;
     }
 
+    public BlockingQueue<String> getQueue() {
+        return queue;
+    }
+
 }
