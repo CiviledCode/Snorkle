@@ -44,9 +44,7 @@ public class AuthHandler {
                         break;
                 }
             }
-        } catch (Exception e) {
-
-        }
+        } catch (Exception ignored) { }
     }
 
 }
