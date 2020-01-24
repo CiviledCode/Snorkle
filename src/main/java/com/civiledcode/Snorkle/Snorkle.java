@@ -1,6 +1,8 @@
 package com.civiledcode.Snorkle;
 
 import java.io.*;
+import java.net.*;
+import java.net.Proxy.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,11 +14,16 @@ public class Snorkle {
 
     public static void runInstance(SnorkleInstance instance, int botNumber, BlockingQueue<String> queue, String[] words) {
         int index = 0;
+        Proxy proxy;
 
         try {
             // Create a blocking queue to send to the newClient method
             // We use this to pass information to the responseParsing thread
             while (instance.shouldStart) {
+
+                    if(instance.needsProxy(botNumber)) {
+                        SocketAddress address = new InetSocketAddress("", 1
+                    }
 
                     int ind = index * instance.getMaxBotAmount() + botNumber;
 
@@ -27,7 +34,7 @@ public class Snorkle {
                     String[] user = words[ind].split(":");
 
                     // Push the response to the responseHandler where we can depict what to do
-                    queue.put(instance.newClient(user[0], user[1]));
+                    queue.put(botNumber + "~" + user[0] + ":" + user[1] + "~" + instance.newClient(user[0], user[1], proxy));
 
                     // Increase the index and bot count for the instance
                     index++;

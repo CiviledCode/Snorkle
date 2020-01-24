@@ -2,6 +2,11 @@ package com.civiledcode.Snorkle;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -24,6 +29,10 @@ public abstract class SnorkleInstance {
     AuthHandler handler = new AuthHandler();
 
     ArrayBlockingQueue<String> queue;
+
+    ArrayList<Integer> proxyNeeded = new ArrayList<>();
+
+    ArrayList<String> needRetry = new ArrayList<>();
 
     public SnorkleInstance(String title, File wordList) throws IOException {
         this.instanceTitle = title;
@@ -52,7 +61,7 @@ public abstract class SnorkleInstance {
      * @param pass Password of account
      * @return String used for response parsing in the PARSE thread
      */
-    public abstract String newClient(String user, String pass);
+    public abstract String newClient(String user, String pass, Proxy proxy);
 
     public boolean usesCaptcha(boolean bool) {
         return this.useCaptcha = bool;
@@ -94,4 +103,17 @@ public abstract class SnorkleInstance {
         return getMaximumBots;
     }
 
+    public boolean needsProxy(int botId) {
+        for(int i  : proxyNeeded) {
+            if(i == botId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public String[] getProxy() {
+        ProxySelector.getDefault().select(URI.create("https://google.com"));
+    }
 }

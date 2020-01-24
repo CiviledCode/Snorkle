@@ -15,7 +15,7 @@ public class AuthHandler {
         return FAILURE;
     }
 
-    public void handleCustom() {
+    public void handleCustom(String response, String details) {
         System.out.println(ConsoleColor.RED + "ERROR: No custom handle defined in AuthHandler! Please override handleCustom and try again");
         System.exit(0);
     }
@@ -24,7 +24,25 @@ public class AuthHandler {
         try {
             String message;
             while (!(message = queue.take()).equalsIgnoreCase("EXIT")) {
-                handleResponse(message);
+                //The format is botid~user:password~response
+                String[] args = message.split("~");
+
+                int response = handleResponse(args[2]);
+
+                switch (response) {
+                    case FAILURE:
+                        break;
+                    case SUCCESS:
+                        //Save the combo to hits.txt
+                        break;
+                    case BAN:
+                        instance.proxyNeeded.add(Integer.parseInt(args[0]));
+                        instance.needRetry.add(args[1]);
+                        break;
+                    case CUSTOM:
+                        handleCustom(args[2], args[0]);
+                        break;
+                }
             }
         } catch (Exception e) {
 
