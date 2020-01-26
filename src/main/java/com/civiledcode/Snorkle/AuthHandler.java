@@ -36,8 +36,8 @@ public class AuthHandler {
                         //Save the combo to hits.txt
                         break;
                     case BAN:
-                        instance.proxyNeeded.add(Integer.parseInt(args[0]));
-                        instance.needRetry.add(args[1]);
+                        String proxyDetails = instance.findProxy(instance.proxies, instance.random);
+                        instance.proxyAssigned.replace(Thread.currentThread().getName(), proxyDetails);
                         break;
                     case CUSTOM:
                         handleCustom(args[2], args[0]);

@@ -2,7 +2,6 @@ package com.civiledcode.Snorkle;
 
 import java.io.*;
 import java.net.*;
-import java.net.Proxy.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,18 +11,12 @@ public class Snorkle {
 
     //TODO: Work on retrying if auth failed due to banned IP or bad request
 
-    public static void runInstance(SnorkleInstance instance, int botNumber, BlockingQueue<String> queue, String[] words) {
+    public static void runInstance(SnorkleInstance instance, int botNumber, BlockingQueue<String> queue, String[] words, Proxy proxy) {
         int index = 0;
-        Proxy proxy;
-
         try {
             // Create a blocking queue to send to the newClient method
             // We use this to pass information to the responseParsing thread
             while (instance.shouldStart) {
-
-                    if(instance.needsProxy(botNumber)) {
-                        SocketAddress address = new InetSocketAddress("", 1
-                    }
 
                     int ind = index * instance.getMaxBotAmount() + botNumber;
 
