@@ -132,6 +132,10 @@ public abstract class SnorkleInstance {
         return(null);
     }
 
+    public ArrayBlockingQueue<String> getQueue() {
+        return queue;
+    }
+
     public void stop() {
         shouldStart = false;
     }
