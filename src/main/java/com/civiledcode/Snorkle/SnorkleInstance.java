@@ -78,7 +78,7 @@ public abstract class SnorkleInstance {
         return handler;
     }
 
-    public void start(SnorkleInstance instance, BlockingQueue<String> queue) {
+    public void start(SnorkleInstance instance) {
         try {
             words = Snorkle.parseList(instance.wordList);
             proxies = Snorkle.parseList(instance.proxiesFile);
@@ -117,7 +117,7 @@ public abstract class SnorkleInstance {
         }
     }
 
-    private static Proxy.Type detectProxyType(InetSocketAddress proxyAddress) {
+    private Proxy.Type detectProxyType(InetSocketAddress proxyAddress) {
         try {
             URL url = new URL("http://www.google.com");
             List<Proxy.Type> proxyTypesToTry = Arrays.asList(Proxy.Type.SOCKS, Proxy.Type.HTTP);
@@ -131,11 +131,7 @@ public abstract class SnorkleInstance {
         } catch (IOException ignored) { }
         return(null);
     }
-
-    public ArrayBlockingQueue<String> getQueue() {
-        return queue;
-    }
-
+    
     public void stop() {
         shouldStart = false;
     }
